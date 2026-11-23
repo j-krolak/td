@@ -1,0 +1,381 @@
+<h1 id="td-kolokwium-1-23.11.2026-ściąga-abcd">TD – Kolokwium 1
+(23.11.2026) – ściąga ABCD</h1>
+<p>Źródło: wykłady 2–7 + 11 pytań z kolokwium 2021 (folder
+<code>zip</code>). Format: 25 pytań, ~25 min, bez cofania → ~1
+min/pytanie. Nie wiesz = zgaduj, nie stój.</p>
+<h2 id="pytania-z-2021-te-same-typy-wrócą-odpowiedzi">0. Pytania z 2021
+(te same typy wrócą) – odpowiedzi</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Pytanie</th>
+<th>Odp.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Manchester</td>
+<td><strong>2</strong> – każdy bit ≥1 przejście, ten sam czas
+(samosynchronizujący, zegar da się odzyskać)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ICMPv6 odpowiednik ARP</td>
+<td><strong>2</strong> – Neighbor Solicitation (multicast) + Neighbor
+Advertisement (unicast)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Full-duplex Ethernet (wiele)</td>
+<td><strong>1, 3</strong> – para stacji, medium punkt-punkt
+(skrętka/światłowód). NIE wiele stacji, NIE PON</td>
+</tr>
+<tr>
+<td>4</td>
+<td>802.1AX Link Aggregation</td>
+<td><strong>1</strong> – kilka łączy Ethernet → jeden kanał logiczny
+(LACP; łącza o tej samej przepływności)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Distance Vector</td>
+<td><strong>2</strong> – wymiana tablic z sąsiadami + Bellman-Ford
+(Dijkstra = link state)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>DCF (Wi-Fi)</td>
+<td><strong>1</strong> – nasłuch kanału przez DIFS przed nadaniem. To
+CSMA/CA, nie CSMA/CD</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Sieci dostępowe (wiele)</td>
+<td><strong>Ethernet LAN, FTTH</strong> (nie Bluetooth, nie SATA)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Warstwa 3 OSI przetwarza nagłówki</td>
+<td><strong>IPv6</strong> (TCP=L4, Ethernet=L2, HTTPS=L7)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>ARP (wiele)</td>
+<td><strong>0</strong> na pewno (IPv4 L3 → MAC L2). Tablicę ARP mają
+hosty/rutery, nie przełącznik (2 fałsz). 1 vs 3 sporne – raczej
+„niezbędny”</td>
+</tr>
+<tr>
+<td>10</td>
+<td>SLA</td>
+<td>najpewniej <strong>dostępność sieci</strong> (nie ma w
+slajdach)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>10Base2 exp. backoff (wiele)</td>
+<td><strong>0 i 3</strong> – po i kolizjach losowo 0…2^i−1 szczelin; po
+2. kolizji 0–3</td>
+</tr>
+<tr>
+<td>–</td>
+<td>Ruter IP przełącza w oparciu o</td>
+<td><strong>wyłącznie docelowy adres IP</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="topologia-internetu-wykład-2">1. Topologia Internetu (wykład
+2)</h2>
+<ul>
+<li><strong>PoP</strong> – punkt obecności; inter-PoP = długie, szybkie
+łącza; intra-PoP = krótkie.</li>
+<li><strong>Multi-homing</strong> – 2+ dostawców: niezawodność,
+negocjacje cen, lepsza ścieżka.</li>
+<li><strong>AS</strong> (RFC 1930) – grupa prefiksów IP z <strong>jedną,
+jasno określoną polityką routingu</strong>. BGP = EGP między AS.</li>
+<li><strong>Peering</strong> (wymiana ruchu klientów, zwykle bez opłat)
+vs <strong>tranzyt</strong> (płacisz za dojście do całego Internetu).
+<strong>IX</strong> – punkt wymiany ruchu (TPIX, PLIX, DE-CIX,
+AMS-IX).</li>
+<li><strong>Tier 1</strong> – sieć bez tranzytu, tylko peering.</li>
+<li><strong>Sieci dostępowe</strong>: FTTH, kabel (DOCSIS), xDSL,
+Ethernet LAN/WLAN, dial-up, satelita, PON. Rdzeń = duży wolumen, niska
+cena/Mb; dostęp = mały wolumen.</li>
+<li>xDSL: 0–4 kHz telefon, 4–50 kHz upstream, 50 kHz–1 MHz
+downstream.</li>
+<li><strong>traceroute</strong>: <code>*</code> = brak odpowiedzi.
+Rejestry: RIPE (Europa), ARIN (USA). IANA → RIR → LIR → klient.</li>
+<li><strong>LACP</strong> = 802.1AX.</li>
+</ul>
+<h2 id="model-ositcp-ip-ethernet-wi-fi-wykład-3">2. Model OSI/TCP-IP,
+Ethernet, Wi-Fi (wykład 3)</h2>
+<p><strong>Warstwy</strong>: 7 aplikacji (HTTP, SMTP, FTP, DNS) · 4
+transportowa (TCP, UDP) · 3 sieciowa (IP) · 2 łącza (Ethernet, Wi-Fi) ·
+1 fizyczna. Jednostki: wiadomość → segment → datagram/pakiet →
+<strong>ramka</strong> → bity. - <strong>TCP</strong>: połączeniowy,
+gwarancja dostarczenia, kontrola przepływu i zatorów.
+<strong>UDP</strong>: bez niczego. - Ruter ma tylko warstwy 1–3,
+przełącznik 1–2, host wszystkie. - Enkapsulacja: każda warstwa dokłada
+swój nagłówek.</p>
+<p><strong>Tryby</strong>: simplex (jeden kierunek, TV), half-duplex
+(obie strony, ale naprzemiennie, walkie-talkie), full-duplex
+(jednocześnie, telefon).</p>
+<p><strong>Kodowanie Manchester</strong>: przejście w środku każdego
+bita, stały czas bitu, samosynchronizujące (10BaseT). Wg G.E. Thomasa 0
+= niski→wysoki, 1 = wysoki→niski (w IEEE 802.3 odwrotnie).</p>
+<p><strong>Medium</strong>: 10Base2 – cienki koncentryk 50 Ω,
+magistrala, <strong>brak</strong> full-duplex. 10GBASE-T = 802.3an,
+skrętka do 100 m. 10GBASE-SR – wielomodowy, 850 nm. -LR – jednomodowy,
+1310 nm, &lt;10 km. -ER – jednomodowy, 1550 nm, &lt;40 km. Full-duplex
+wspierają: 10BASE-T, 100BASE-TX, 1000BASE-T/SX/LX… NIE: 10BASE5,
+10BASE2.</p>
+<p><strong>CSMA/CD</strong> (klasyczny Ethernet, half-duplex): 1. Ramka
+gotowa → czy medium wolne? Jeśli nie, czekaj + przerwa międzyramkowa 9,6
+µs (10 Mb/s). 2. Nadawaj. Kolizja → sygnał jam, aborcja po max prób. 3.
+<strong>Binary exponential backoff</strong>: po i-tej kolizji losuj
+0…2^i−1 szczelin (1. kolizja: 0 lub 1; 2.: 0–3). - W Gigabit
+(praktycznie) i 10G CSMA/CD nie jest używane; full-duplex = brak
+kolizji.</p>
+<p><strong>Wi-Fi 802.11 – CSMA/CA, DCF</strong>: stacja nasłuchuje kanał
+przez <strong>DIFS</strong>; wolny → nadaje; zajęty → odkłada. Odbiorca
+potwierdza <strong>ACK</strong> po <strong>SIFS</strong> (SIFS &lt;
+DIFS). - <strong>Hidden terminal</strong>: stacje A i C słyszą AP, ale
+nie siebie → kolizje u AP. Rozwiązanie: <strong>RTS/CTS</strong>. -
+Synchronizacja zegara: beacon od AP (tryb infrastruktury); ad-hoc –
+każdy może wysłać. - <strong>MIMO/beamforming</strong> – skupianie
+sygnału na odbiorcy.</p>
+<p><strong>DOCSIS</strong>: internet po kablu TV; CMTS ↔︎ modemy;
+upstream dzielony na mini-sloty, CMTS przydziela je wiadomością
+<strong>MAP</strong> → brak kolizji. DS: 64/256-QAM.</p>
+<h2 id="warstwa-2-przełączniki-arp-vlan-wykład-4">3. Warstwa 2:
+przełączniki, ARP, VLAN (wykład 4)</h2>
+<ul>
+<li><strong>MAC</strong>: 6 bajtów (48 bit), broadcast
+<code>FF-FF-FF-FF-FF-FF</code>.</li>
+<li><strong>Przełącznik</strong>: uczy się adresów (tablica MAC /
+forwarding table) z adresów źródłowych; nieznany/broadcast cel → flood
+na wszystkie porty oprócz wejściowego.</li>
+<li><strong>Pętle</strong>: Ethernet nie ma TTL → ramka krąży w
+nieskończoność → <strong>STP</strong> wyłącza porty (drzewo
+rozpinające).</li>
+<li><strong>ARP</strong>: IPv4 → MAC. Zapytanie =
+<strong>broadcast</strong>, odpowiedź = <strong>unicast</strong>.
+Tablica ARP na hostach i ruterach (nie na switchu).</li>
+<li><strong>IPv6</strong>: zamiast ARP → <strong>NDP</strong>
+(ICMPv6).</li>
+<li><strong>VLAN</strong> (802.1Q): wirtualne sieci L2;
+<strong>trunk</strong> = jedno łącze niesie wiele VLAN-ów (znacznik
+802.1Q w ramce).</li>
+<li><strong>Subnetting</strong>: host robi AND(maska, adres docelowy); =
+własna podsieć → dostarcza bezpośrednio, inaczej → do rutera
+(bramy).</li>
+<li><strong>MPLS</strong>: nagłówek między L2 a L3 („warstwa 2.5”).</li>
+<li>Ruter IP przełącza <strong>wyłącznie po docelowym adresie
+IP</strong>.</li>
+</ul>
+<p><em>(Mobilne GSM/LTE – w wykładzie oznaczone „opcjonalnie”. Gdybyś
+miał/a chwilę: GSM = GMSK, 124 kanały × 200 kHz, 8 szczelin TDMA po
+0,577 ms, FDD; GPRS = pakietowy, 171,2 kb/s; EDGE = 8-PSK, 812 kb/s; LTE
+= OFDMA (down) / SC-FDMA (up), podnośne 15 kHz, ramka 10 ms = 10
+podramek, RB = 180 kHz × 0,5 ms; rdzeń EPC: MME, S-GW, PDN-GW; 5G TDD
+wymaga synchronizacji fazy ±1,5 µs.)</em></p>
+<h2 id="ipv4-icmp-dhcp-nat-wykłady-56">4. IPv4, ICMP, DHCP, NAT (wykłady
+5–6)</h2>
+<p><strong>Nagłówek IPv4</strong>: 20 B min (IHL=5, w słowach 32-bit),
+do 60 B. Pola: Version(4), IHL, DSCP+ECN, Total length (16 bit, max
+65535), Identification, Flags (DF, MF), Fragment offset (jednostki
+<strong>8 B</strong>), <strong>TTL</strong>, Protocol, Header checksum,
+src, dst. - Protocol: <strong>1 ICMP, 6 TCP, 17 UDP, 89 OSPF</strong>,
+50 ESP, 51 AH, 47 GRE. - TTL −1 na każdym ruterze; 0 → drop + ICMP typ
+11. Checksum <strong>przeliczany na każdym hopie</strong>. - IP = best
+effort: bez gwarancji dostarczenia, kolejności, braku duplikatów.</p>
+<p><strong>Fragmentacja</strong> (MTU Ethernet 1500): wysyła dane tylko
+≤ MTU. Przykład 4000 B (20 + 3980): - frag 1: 1480 B, MF=1, offset 0 -
+frag 2: 1480 B, MF=1, offset <strong>185</strong> (1480/8) - frag 3:
+1020 B, MF=0, offset <strong>370</strong> - Fragmentują rutery,
+<strong>składa tylko odbiorca</strong>. DF=1 i za duże → ICMP typ 3 kod
+4 (<strong>PMTUD</strong>). Blokowanie ICMP = „black hole”.</p>
+<p><strong>Adresy</strong>: <code>/24</code> = 255.255.255.0; adres
+sieci (host=00…0) i broadcast (host=11…1) niedostępne dla hostów →
+hostów = 2^n − 2 (/24 = 254, /26 = 62, /27 = 30, /30 = 2). - Klasy: A
+1–126 (/8), B 128–191 (/16), C 192–223 (/24), D 224–239 multicast, E
+240+. Dziś CIDR. - <strong>Prywatne (RFC 1918)</strong>:
+<code>10.0.0.0/8</code>, <code>172.16.0.0/12</code> (172.16–172.31),
+<code>192.168.0.0/16</code>. CGNAT: <code>100.64.0.0/10</code>. -
+<code>127.0.0.0/8</code> loopback, <code>169.254.0.0/16</code>
+link-local (gdy DHCP padnie), <code>0.0.0.0/8</code>,
+<code>255.255.255.255</code> broadcast ograniczony. -
+<strong>Podsieci</strong>: rozmiar = potęga 2, adres sieci podzielny
+przez rozmiar. <strong>VLSM</strong>: największy blok pierwszy.
+Przykład: 200.20.10.0/24 → /25 (.0), /26 (.128), /27 (.192), /27 (.224).
+- <strong>Agregacja (CIDR)</strong>: 200.20.16.0/24…19.0/24 →
+<strong>200.20.16.0/22</strong>. <strong>Longest prefix match</strong> –
+wygrywa najdłuższy pasujący prefiks. Agregacja wymaga ciągłego bloku
+adresów + jednego wyjścia.</p>
+<p><strong>ICMP</strong> (protokół IP nr 1, bez portów): typ 0/8 echo
+reply/request (ping), <strong>3</strong> destination unreachable (kod 3
+port unreachable, kod 4 frag needed+DF), <strong>11</strong> time
+exceeded, 5 redirect, 12 parameter problem. -
+<strong>traceroute</strong>: TTL=1,2,3… ; rutery odpowiadają typ 11; cel
+odpowiada typ 3 kod 3 (Linux, UDP na wysoki port) lub echo reply
+(Windows tracert, ICMP). Domyślnie 3 próby na hop.</p>
+<p><strong>DHCP</strong>: UDP serwer <strong>67</strong>, klient
+<strong>68</strong>. <strong>DORA</strong>: Discover (broadcast) → Offer
+→ Request (broadcast) → Ack. Daje: adres, maskę, bramę, DNS, czas
+dzierżawy. Odnowienie <strong>T1 = 50%</strong> (unicast), rebind
+<strong>T2 = 87,5%</strong> (broadcast).</p>
+<p><strong>NAT/NAPT (PAT)</strong>: wiele adresów prywatnych → 1
+publiczny, rozróżnianie <strong>numerem portu</strong>. Przepisuje 4
+pola: src IP, src port (wyjście) / dst IP, dst port (powrót). Tablica
+tłumaczeń + timeout. NAT <strong>nie jest</strong> zabezpieczeniem; nie
+przyjmie połączenia przychodzącego, którego nie zainicjowano.</p>
+<h2 id="ipv6-wykład-6">5. IPv6 (wykład 6)</h2>
+<ul>
+<li>128 bit, hex, grupy po 16 bit. Skracanie: wiodące zera +
+<strong>jedno</strong> <code>::</code> (najdłuższy ciąg zer).
+<code>2001::1::2</code> – nielegalne.</li>
+<li><strong>Nagłówek stały 40 B.</strong> Usunięte: IHL,
+<strong>checksum</strong>, pola fragmentacji, (opcje → nagłówki
+rozszerzeń). Zmiany nazw: TTL → <strong>Hop Limit</strong>, Protocol →
+<strong>Next Header</strong>, ToS → Traffic Class, Total len → Payload
+length. Jest <strong>Flow label</strong>.</li>
+<li><strong>Fragmentuje tylko źródło</strong> (rutery nie). Za duży →
+ICMPv6 <strong>Packet Too Big</strong> (typ 2). Min MTU
+<strong>1280</strong>.</li>
+<li><strong>Brak broadcastu</strong> → multicast.</li>
+<li>Typy: unicast, anycast, multicast (<code>FF00::/8</code>).</li>
+<li>Global unicast <code>2000::/3</code>: 48 b prefiks + 16 b subnet +
+64 b interface ID. Dokumentacja <code>2001:db8::/32</code>.</li>
+<li><strong>Link-local <code>FE80::/10</code></strong> (zawsze na
+interfejsie, nie routowany). <strong>ULA <code>FC00::/7</code></strong>
+(praktycznie <code>FD</code>) = odpowiednik prywatnych. <code>::1</code>
+loopback, <code>::</code> nieokreślony.</li>
+<li>Multicast: <code>FF02::1</code> wszystkie węzły,
+<code>FF02::2</code> wszystkie rutery, <code>FF02::5</code> OSPFv3,
+<code>FF02::9</code> RIPng. <strong>Solicited-node</strong>:
+<code>FF02::1:FFxx:xxxx</code> (ostatnie 24 bity adresu).</li>
+<li><strong>ICMPv6</strong>: typy 0–127 błędy, 128–255 informacyjne.
+128/129 echo, <strong>133 RS, 134 RA, 135 NS, 136 NA, 137
+Redirect</strong>. Obowiązkowy – nie wolno go blokować hurtem.</li>
+<li><strong>NDP</strong>: router discovery (RS→<code>FF02::2</code>,
+RA→<code>FF02::1</code>), rozwiązywanie adresów (NS multicast → NA
+unicast), <strong>DAD</strong> (NS ze źródłem <code>::</code>),
+redirect.</li>
+<li><strong>SLAAC</strong> (bezstanowo): host sam tworzy adres = prefiks
+z RA + interface ID. <strong>DHCPv6</strong> (stanowo): flaga M w RA
+(adresy), O (inne ustawienia).</li>
+<li><strong>EUI-64</strong>: MAC <code>00:1A:2B:3C:4D:5E</code> → wstaw
+<code>FF:FE</code> w środek → odwróć bit 7 pierwszego bajtu (00→02) →
+<code>021A:2BFF:FE3C:4D5E</code>. Link-local:
+<code>fe80::21a:2bff:fe3c:4d5e</code>.</li>
+<li>IPv4 skończyło się: IANA 3.02.2011, ARIN 24.09.2015.</li>
+</ul>
+<h2 id="routing-wykład-7">6. Routing (wykład 7)</h2>
+<p><strong>Statyczny</strong> – ręczny, mało zasobów, nie reaguje na
+awarie; <strong>dynamiczny</strong> – automatyczny, więcej CPU/pamięci,
+wrażliwy na błędy konfiguracji. <strong>IGP</strong> (wewnątrz AS: RIP,
+OSPF) vs <strong>EGP</strong> (między AS: BGP).</p>
+<p><strong>Distance Vector – RIP</strong> (Bellman-Ford):
+<code>d(x,y) = min_v { c(x,v) + d(v,y) }</code>. - Router zna tylko
+odległości od sąsiadów, <strong>nie topologię</strong>. - Metryka =
+<strong>liczba hopów</strong>, max <strong>15</strong>, <strong>16 =
+nieosiągalne</strong>. - Timery: update <strong>30 s</strong> (±5 s),
+timeout <strong>180 s</strong>, garbage collection <strong>120
+s</strong>. - RIPv1/v2: UDP <strong>520</strong>, v2 multicast
+<strong>224.0.0.9</strong>, RIPng UDP <strong>521</strong>,
+<code>FF02::9</code>. Wiadomość: nagłówek 4 B + do 25 wpisów × 20 B =
+max <strong>504 B</strong>. v1 classful (bez maski), v2 ma maskę/next
+hop/tag. - <strong>Counting to infinity</strong> – pętla zwiększa
+metrykę do 16. Środki: <strong>split horizon</strong>, <strong>poison
+reverse</strong> (odesłanie trasy z metryką 16), <strong>route
+poisoning</strong>, <strong>triggered updates</strong>. - RIP jest
+powolny w zbieżności, ignoruje przepustowość, wysyła całą tablicę co 30
+s.</p>
+<p><strong>Link State – OSPF</strong> (Dijkstra/SPF): każdy ruter ma
+pełną mapę obszaru (LSDB). - IP protokół <strong>89</strong> (bez
+TCP/UDP). Multicast <strong>224.0.0.5</strong> (AllSPFRouters),
+<strong>224.0.0.6</strong> (AllDRouters). - 3 bazy: sąsiedzi
+(adjacency), LSDB, tablica routingu. - <strong>Hello</strong>: co
+<strong>10 s</strong> (NBMA 30 s), dead interval = 4× hello. Muszą się
+zgadzać: maska, hello/dead, <strong>Area ID</strong>, flaga E. -
+<strong>DR/BDR</strong> na sieciach broadcast: wygrywa <strong>najwyższy
+priorytet</strong>, remis → <strong>najwyższy Router ID</strong>.
+Priorytet 0 = nigdy DR. - <strong>Obszary</strong>: area 0 = backbone,
+wszystko łączy się z area 0. <strong>ABR</strong> łączy obszary,
+<strong>ASBR</strong> importuje trasy spoza OSPF. -
+<strong>LSA</strong>: 1 Router (każdy ruter, obszar), 2 Network (DR), 3
+Summary sieci (ABR), 4 Summary ASBR (ABR), 5 External (ASBR, cały AS), 7
+NSSA (ASBR w NSSA, ABR zamienia na 5). - <strong>Stub</strong>: blokuje
+typ 5 (+4), ABR daje trasę domyślną; <strong>totally stubby</strong>
+(<code>no-summary</code>): blokuje też 3; <strong>NSSA</strong>:
+dopuszcza ASBR przez typ 7. - Pakiety: <strong>1 Hello, 2 DD, 3 LSR, 4
+LSU, 5 LSAck</strong>. Synchronizacja: DD (nagłówki LSA; master = wyższy
+Router ID) → LSR → LSU → LSAck → stan Full. - LSA odświeżane co
+<strong>30 min</strong>, MaxAge <strong>60 min</strong>; większy numer
+sekwencyjny = nowszy. - Metryka = koszt ~
+<code>100 Mb/s / przepustowość</code> (≥100 Mb/s → 1; 10 Mb/s → 10; 2
+Mb/s → 50). - Preferencja tras: wewnątrz obszaru &gt; między obszarami
+&gt; zewnętrzne. E1 = metryka zewn. + koszt do ASBR; E2 = tylko metryka
+zewn. (domyślne). - OSPFv3 (IPv6): FF02::5/FF02::6, adresy sąsiadów
+link-local, uwierzytelnianie przez IPsec.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>RIP</th>
+<th>OSPF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Algorytm</td>
+<td>Bellman-Ford (DV)</td>
+<td>Dijkstra (LS)</td>
+</tr>
+<tr>
+<td>Metryka</td>
+<td>hopy, max 15</td>
+<td>koszt z przepustowości</td>
+</tr>
+<tr>
+<td>Aktualizacje</td>
+<td>cała tablica co 30 s</td>
+<td>LSA przy zmianie + 30 min</td>
+</tr>
+<tr>
+<td>Zbieżność</td>
+<td>wolna, count-to-infinity</td>
+<td>szybka, bez pętli</td>
+</tr>
+<tr>
+<td>Skala</td>
+<td>mała sieć</td>
+<td>duże sieci (obszary)</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>UDP 520</td>
+<td>IP 89</td>
+</tr>
+</tbody>
+</table>
+<h2 id="szybkie-pułapki-abcd">7. Szybkie pułapki ABCD</h2>
+<ul>
+<li>„Wszystkie prawidłowe” – zwykle 2 poprawne; szukaj słów
+<strong>tylko/zawsze/musi</strong>.</li>
+<li>Full-duplex ≠ wiele stacji; Manchester = ten sam czas bitu; DCF =
+CSMA/<strong>CA</strong>.</li>
+<li>ARP: broadcast zapytanie, unicast odpowiedź; IPv6: NS multicast, NA
+unicast.</li>
+<li>Router IP decyduje po <strong>dst IP</strong> (nie MAC, nie
+port).</li>
+<li>DV = Bellman-Ford + wymiana tablic; LS = Dijkstra + topologia.</li>
+<li>IPv6: brak checksum, brak broadcastu, fragmentuje źródło.</li>
+</ul>
